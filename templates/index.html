@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HairFast AI Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* HTML & Body Resets for Full Page */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Global & Base Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #0A0A0A; /* Even deeper dark background */
+            color: #E0E0E0; /* Light grey text */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        /* Main Container */
+        .container {
+            background-color: #1A1A1A; /* Darker container background */
+            border-radius: 0; /* No border-radius for full width */
+            box-shadow: none; /* No shadow for flatter design */
+            padding: 40px;
+            width: 100%; /* Full width */
+            max-width: none; /* No max-width constraint */
+            margin-top: 0; /* No top margin */
+            flex-grow: 1; /* Allow container to grow and fill available space */
+            box-sizing: border-box;
+            border: none; /* No border */
+        }
+
+        /* Titles & Headings */
+        h1 {
+            color: #0000cc; /* Primary accent blue (main title) */
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+        .section-title {
+            color: #E0E0E0;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #282828; /* Darker border */
+            padding-bottom: 10px;
+            font-weight: 500;
+        }
+
+        /* IP Info Box */
+        .ip-info {
+            background-color: #222222; /* Darker background */
+            border: 1px solid #0000cc; /* Primary blue for info border */
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #C0C0C0;
+            display: flex; /* Flex container for the content */
+            flex-wrap: wrap; /* Allow content to wrap if it gets too long, but try to keep it in one row */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Vertically align items */
+            gap: 5px; /* Space between elements */
+        }
+        .ip-info code {
+            background-color: #333333; /* Darker code background */
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', monospace; /* Monospaced for code */
+            color: #6666ff; /* Lighter blue for code */
+            font-weight: 400;
+            white-space: nowrap; /* Prevent code itself from wrapping */
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 35px;
+            background-color: #222222; /* Darker background */
+            border-radius: 8px;
+            padding: 4px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+        }
+        .tab-button {
+            background-color: transparent;
+            color: #A0A0A0;
+            border: none;
+            padding: 12px 28px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex; /* For icon and text alignment */
+            align-items: center;
+            gap: 8px; /* Space between icon and text */
+        }
+        .tab-button:hover {
+            background-color: #3A3A3A;
+            color: #E0E0E0;
+        }
+        .tab-button.active {
+            background-color: #0000cc; /* Primary blue - Active tab background */
+            color: white; /* White text on active tab */
+            box-shadow: 0 2px 8px rgba(0, 0, 204, 0.4);
+            font-weight: 700;
+        }
+
+        /* Tab Content Panes */
+        .tab-content {
+            padding: 0;
+        }
+        .tab-pane {
+            display: none;
+            padding: 0;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        .tab-pane p {
+            color: #B0B0B0;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+        }
+
+        /* Image Input/Output Boxes */
+        .input-group, .output-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+        .input-box, .output-box {
+            background-color: #222222; /* Darker background */
+            border: 2px dashed #3A3A3A; /* Darker dashed border */
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #909090; /* Soft grey for default text */
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .input-box.drag-over {
+            border-color: #0000cc; /* Primary blue - Highlight on drag over */
+            background-color: #3A3A3A;
+            box-shadow: 0 4px 15px rgba(0, 0, 204, 0.3);
+        }
+        .input-box input[type="file"] {
+            display: none;
+        }
+        .file-upload-button {
+            cursor: pointer;
+            background-color: #0000cc; /* Primary blue - Button */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-weight: 500;
+            font-size: 0.95em;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 204, 0.3);
+        }
+        .file-upload-button:hover {
+            background-color: #0000e6; /* Slightly lighter blue on hover */
+            transform: translateY(-1px);
+        }
+        .default-icon {
+            font-size: 3.5em;
+            color: #666666;
+            margin-bottom: 10px;
+        }
+        .placeholder-text {
+            font-size: 0.9em;
+            color: #8A8A8A;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+        .image-display {
+            max-width: 100%;
+            max-height: 220px;
+            object-fit: contain;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .output-box label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-weight: 500;
+            color: #E0E0E0;
+            background: rgba(30, 30, 30, 0.7); /* Semi-transparent dark background for label */
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+        .output-box p {
+            color: #8A8A8A;
+        }
+
+        /* Sliders */
+        .slider-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #222222; /* Darker background */
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .slider-section h3 {
+            color: #0000cc; /* Primary blue - Slider section title */
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .slider-group {
+            display: flex;
+            flex-direction: column; /* Stack label and slider */
+            align-items: flex-start;
+            margin-bottom: 25px;
+        }
+        .slider-group > label { /* Main slider label */
+            font-weight: 500;
+            color: #C0C0C0;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+            width: 100%; /* Take full width */
+        }
+        .slider-inner-row { /* Container for range and value */
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-top: 5px; /* Space between main label and range/value */
+        }
+        .slider-group input[type="range"] {
+            flex-grow: 1;
+            margin: 0 15px; /* Adjusted margin */
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            background: #444444; /* Darker track */
+            outline: none;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+        .slider-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #0000cc; /* Primary blue - Slider thumb */
+            border-radius: 50%;
+            cursor: grab;
+            box-shadow: 0 2px 6px rgba(0, 0, 204, 0.4);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .slider-group input[type="range"]::-webkit-slider-thumb:hover {
+            background: #0000e6; /* Lighter blue on hover */
+            box-shadow: 0 2px 8px rgba(0, 0, 230, 0.6);
+        }
+        .slider-group input[type="range"]::-webkit-slider-thumb:active {
+            cursor: grabbing;
+        }
+        .slider-value {
+            width: 50px;
+            text-align: right;
+            color: #6666ff; /* Lighter blue for values */
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1em;
+            font-weight: 500;
+        }
+        .slider-labels-below {
+            display: flex;
+            justify-content: space-between;
+            width: calc(100% - 30px); /* Adjust for margins of input range */
+            margin: 5px 15px 0px 15px; /* Margin to align with slider track */
+            font-size: 0.8em;
+            color: #8A8A8A;
+        }
+        .slider-labels-below span {
+            flex: 1;
+            text-align: left;
+        }
+        .slider-labels-below span:last-child {
+            text-align: right;
+        }
+        .slider-clarification {
+            font-size: 0.8em;
+            color: #FFD700; /* Gold/Yellow for warning */
+            margin-top: 5px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            text-align: center;
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .action-buttons button {
+            background-color: #0000cc; /* Primary blue - Button */
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 204, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .action-buttons button:hover {
+            background-color: #0000e6; /* Lighter blue on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 230, 0.5);
+        }
+        .action-buttons button#use_edit_result_button {
+            background-color: #000080; /* Darker blue for secondary action */
+            box-shadow: 0 4px 12px rgba(0, 0, 128, 0.3);
+        }
+        .action-buttons button#use_edit_result_button:hover {
+            background-color: #000099;
+            box-shadow: 0 6px 16px rgba(0, 0, 153, 0.5);
+        }
+
+        /* Status Box */
+        .status-box {
+            background-color: #222222; /* Darker background */
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 30px;
+            color: #E0E0E0;
+            font-size: 0.95em;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.2);
+            border: 1px solid #333333; /* Darker border */
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 0.95em;
+            }
+            .input-group, .output-group {
+                grid-template-columns: 1fr;
+            }
+            .slider-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .slider-group label {
+                margin-bottom: 8px;
+            }
+            .slider-group input[type="range"] {
+                margin: 0;
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .action-buttons button {
+                width: 100%;
+            }
+            .slider-labels-below {
+                width: 100%;
+                margin: 5px 0 0 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ HairFast AI Studio ✨</h1>
+        <div class="ip-info">
+            Untuk terhubung dari Flutter, gunakan alamat IP berikut: <code>http://{{ server_ip }}:{{ server_port }}</code>
+            <span style="margin: 0 10px; color: #8A8A8A; white-space: nowrap;">•</span> <!-- Dot separator for better alignment -->
+            Atau temukan dengan nama layanan: <code>My HairFast API._http._tcp.local.</code>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" data-tab="edit-face">
+                <span class="material-icons">face</span> Edit Wajah
+            </button>
+            <button class="tab-button" data-tab="swap-hair">
+                <span class="material-icons">content_cut</span> Swap Rambut
+            </button>
+        </div>
+
+        <div class="tab-content">
+            <div id="edit-face" class="tab-pane active">
+                <h2 class="section-title">Mode Edit Wajah</h2>
+                <p>Upload wajah lalu mainkan slider untuk mengubah fitur wajah. Klik <strong>'Gunakan Hasil Ini'</strong> untuk memakainya di mode Swap Rambut.</p>
+                <form id="edit-face-form">
+                    <div class="input-group">
+                        <div class="input-box" id="edit_face_drop_area">
+                            <label for="edit_face_input" class="file-upload-button">
+                                <span class="material-icons">upload_file</span> Upload Wajah
+                            </label>
+                            <input type="file" id="edit_face_input" name="face_image" accept="image/*" required>
+                            <p class="placeholder-text">Drop Image Here<br>or Click to Upload</p>
+                            <img id="edit_face_preview" class="image-display" style="display:none;">
+                        </div>
+                        <div class="output-box">
+                            <label>Hasil Edit Wajah</label>
+                            <img id="edit_face_output_img" class="image-display" style="display:none;">
+                            <p>Hasil akan muncul di sini</p>
+                        </div>
+                    </div>
+
+                    <div class="slider-section">
+                        <h3>Atribut Edit:</h3>
+                        <div class="slider-group">
+                            <label for="gen_slider">Gen:</label>
+                            <div class="slider-inner-row">
+                                <input type="range" id="gen_slider" name="gen" min="-30.0" max="30.0" step="0.1" value="0.0">
+                                <span id="gen_value" class="slider-value">0.0</span>
+                            </div>
+                            <div class="slider-labels-below">
+                                <span>Maskuline</span>
+                                <span>Feminime</span>
+                            </div>
+                        </div>
+                        <div class="slider-group">
+                            <label for="hair_slider">Hair:</label>
+                            <div class="slider-inner-row">
+                                <input type="range" id="hair_slider" name="hair" min="-30.0" max="30.0" step="0.1" value="0.0">
+                                <span id="hair_value" class="slider-value">0.0</span>
+                            </div>
+                            <div class="slider-labels-below">
+                                <span>Less</span>
+                                <span>More</span>
+                            </div>
+                            <p class="slider-clarification">⚠️ Atribut ini mungkin tidak memengaruhi hasil AI secara langsung.</p>
+                        </div>
+                        <div class="slider-group">
+                            <label for="face_slider">Face:</label>
+                            <div class="slider-inner-row">
+                                <input type="range" id="face_slider" name="face" min="-30.0" max="30.0" step="0.1" value="0.0">
+                                <span id="face_value" class="slider-value">0.0</span>
+                            </div>
+                            <div class="slider-labels-below">
+                                <span>Wide</span>
+                                <span>Slim</span>
+                            </div>
+                            <p class="slider-clarification">⚠️ Atribut ini mungkin tidak memengaruhi hasil AI secara langsung.</p>
+                        </div>
+                        <div class="slider-group">
+                            <label for="age_slider">Age:</label>
+                            <div class="slider-inner-row">
+                                <input type="range" id="age_slider" name="age" min="-30.0" max="30.0" step="0.1" value="0.0">
+                                <span id="age_value" class="slider-value">0.0</span>
+                            </div>
+                            <div class="slider-labels-below">
+                                <span>Young</span>
+                                <span>Old</span>
+                            </div>
+                        </div>
+                        <div class="slider-group">
+                            <label for="lighting_slider">Lighting:</label>
+                            <div class="slider-inner-row">
+                                <input type="range" id="lighting_slider" name="lighting" min="-30.0" max="30.0" step="0.1" value="0.0">
+                                <span id="lighting_value" class="slider-value">0.0</span>
+                            </div>
+                            <div class="slider-labels-below">
+                                <span>Soft</span>
+                                <span>Hard</span>
+                            </div>
+                            <p class="slider-clarification">⚠️ Atribut ini mungkin tidak memengaruhi hasil AI secara langsung.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="button" id="edit_run_button">
+                            <span class="material-icons">palette</span> Edit Wajah Ini
+                        </button>
+                        <button type="button" id="use_edit_result_button">
+                            <span class="material-icons">send</span> Gunakan Hasil Ini untuk Swap
+                        </button>
+                    </div>
+                </form>
+                <div id="edit_status_text" class="status-box">Status: Unggah gambar wajah dan edit.</div>
+            </div>
+
+            <div id="swap-hair" class="tab-pane">
+                <h2 class="section-title">Mode Swap Rambut</h2>
+                <p>Input Wajah di sini akan otomatis terisi jika kamu menekan 'Gunakan Hasil Ini' dari tab Edit Wajah. Pastikan ketiga gambar terisi untuk proses swap.</p>
+                <form id="swap-hair-form">
+                    <div class="input-group">
+                        <div class="input-box" id="swap_face_drop_area">
+                            <label for="swap_face_input" class="file-upload-button">
+                                <span class="material-icons">face</span> Upload Wajah (face)
+                            </label>
+                            <input type="file" id="swap_face_input" name="face_image" accept="image/*" required>
+                            <p class="placeholder-text">Drop Image Here<br>or Click to Upload</p>
+                            <img id="swap_face_preview" class="image-display" style="display:none;">
+                        </div>
+                        <div class="input-box" id="swap_shape_drop_area">
+                            <label for="swap_shape_input" class="file-upload-button">
+                                <span class="material-icons">cut</span> Upload Bentuk Rambut (shape)
+                            </label>
+                            <input type="file" id="swap_shape_input" name="shape_image" accept="image/*" required>
+                            <p class="placeholder-text">Drop Image Here<br>or Click to Upload</p>
+                            <img id="swap_shape_preview" class="image-display" style="display:none;">
+                        </div>
+                        <div class="input-box" id="swap_color_drop_area">
+                            <label for="swap_color_input" class="file-upload-button">
+                                <span class="material-icons">colorize</span> Upload Warna Rambut (color)
+                            </label>
+                            <input type="file" id="swap_color_input" name="color_image" accept="image/*" required>
+                            <p class="placeholder-text">Drop Image Here<br>or Click to Upload</p>
+                            <img id="swap_color_preview" class="image-display" style="display:none;">
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button type="button" id="swap_run_button">
+                            <span class="material-icons">auto_fix_high</span> Proses Swap Rambut
+                        </button>
+                    </div>
+                </form>
+                <div class="output-box" style="min-height: 200px;">
+                    <label>Hasil Akhir</label>
+                    <img id="swap_output_image_img" class="image-display" style="display:none;">
+                    <p>Hasil akan muncul di sini</p>
+                </div>
+                <div id="swap_status_text" class="status-box">Status: Unggah gambar dan proses swap.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Global State ---
+        let editedFaceBlob = null; // To store the edited face from 'Edit Wajah' tab
+
+        // --- UI Elements ---
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        // Edit Face Elements
+        const editFaceForm = document.getElementById('edit-face-form');
+        const editFaceInput = document.getElementById('edit_face_input');
+        const editFaceDropArea = document.getElementById('edit_face_drop_area');
+        const editFacePreview = document.getElementById('edit_face_preview'); 
+        const editFaceOutputImg = document.getElementById('edit_face_output_img'); 
+        const editFaceOutputPlaceholder = editFaceOutputImg.nextElementSibling; 
+        const editStatusText = document.getElementById('edit_status_text');
+        const useEditResultButton = document.getElementById('use_edit_result_button');
+
+        // Swap Hair Elements
+        const swapHairForm = document.getElementById('swap-hair-form');
+        const swapFaceInput = document.getElementById('swap_face_input');
+        const swapFaceDropArea = document.getElementById('swap_face_drop_area');
+        const swapFacePreview = document.getElementById('swap_face_preview');
+        const swapFacePlaceholder = document.getElementById('swap_face_placeholder');
+        
+        const swapShapeInput = document.getElementById('swap_shape_input');
+        const swapShapeDropArea = document.getElementById('swap_shape_drop_area');
+        const swapShapePreview = document.getElementById('swap_shape_preview');
+        const swapShapePlaceholder = document.getElementById('swap_shape_placeholder');
+
+        const swapColorInput = document.getElementById('swap_color_input');
+        const swapColorDropArea = document.getElementById('swap_color_drop_area');
+        const swapColorPreview = document.getElementById('swap_color_preview');
+        const swapColorPlaceholder = document.getElementById('swap_color_placeholder');
+        
+        const swapOutputImg = document.getElementById('swap_output_image_img');
+        const swapOutputPlaceholder = swapOutputImg.nextElementSibling; 
+        const swapStatusText = document.getElementById('swap_status_text');
+
+
+        // --- Helper Functions ---
+        function updateSliderValue(slider) {
+            const valueSpan = document.getElementById(slider.id.replace('_slider', '_value'));
+            if (valueSpan) {
+                valueSpan.textContent = parseFloat(slider.value).toFixed(1);
+            }
+        }
+
+        // Handles displaying image preview from file input
+        function handleImageInputChange(inputElement, previewImgElement, placeholderElement) {
+            if (inputElement.files && inputElement.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImgElement.src = e.target.result;
+                    previewImgElement.style.display = 'block';
+                    if (placeholderElement) placeholderElement.style.display = 'none';
+                };
+                reader.readAsDataURL(inputElement.files[0]);
+            } else {
+                previewImgElement.src = '';
+                previewImgElement.style.display = 'none';
+                if (placeholderElement) placeholderElement.style.display = 'block';
+            }
+        }
+
+        // Generic function for form submission to API endpoints
+        async function submitForm(form, endpoint, statusDisplay, resultImgDisplay, resultPlaceholder) {
+            statusDisplay.textContent = `Mengirim data ke server AI (${endpoint}). Ini mungkin membutuhkan waktu...`;
+            resultImgDisplay.style.display = 'none';
+            if (resultPlaceholder) resultPlaceholder.style.display = 'block';
+
+            const formData = new FormData(form);
+
+            document.querySelectorAll(`#${form.id} input[type="range"]`).forEach(slider => {
+                formData.append(slider.name, slider.value);
+            });
+
+            if (endpoint === '/swap_hair' && editedFaceBlob) {
+                const currentFaceFile = formData.get('face_image');
+                if (currentFaceFile instanceof File && currentFaceFile.size > 0) {
+                     console.log("User uploaded new face image for swap, ignoring previous edit result.");
+                } else {
+                    formData.set('face_image', editedFaceBlob, 'edited_face.png'); 
+                    console.log("Using edited face result for swap.");
+                }
+            }
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || `Terjadi kesalahan: ${response.status} ${response.statusText}`);
+                }
+
+                const imageBlob = await response.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+
+                resultImgDisplay.src = imageUrl;
+                resultImgDisplay.style.display = 'block';
+                if (resultPlaceholder) resultPlaceholder.style.display = 'none';
+                statusDisplay.textContent = `Gambar berhasil diterima dari server dari endpoint ${endpoint}!`;
+
+                if (endpoint === '/preview_face') {
+                    editedFaceBlob = imageBlob;
+                }
+
+            } catch (error) {
+                statusDisplay.textContent = `Error dari ${endpoint}: ${error.message}`;
+                console.error(`Error dari ${endpoint}:`, error);
+            }
+        }
+        
+        // --- Drag and Drop Functionality ---
+        function setupDragAndDrop(dropArea, inputElement, previewImgElement, placeholderElement) {
+            dropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropArea.classList.add('drag-over');
+            });
+            dropArea.addEventListener('dragleave', () => {
+                dropArea.classList.remove('drag-over');
+            });
+            dropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropArea.classList.remove('drag-over');
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    inputElement.files = e.dataTransfer.files; // Assign dropped files to input
+                    handleImageInputChange(inputElement, previewImgElement, placeholderElement);
+                }
+            });
+            // Click to upload on the entire drop area
+            dropArea.addEventListener('click', (e) => {
+                // Only trigger if click is not on the label itself (which handles its own click)
+                if (!e.target.closest('label.file-upload-button')) {
+                    inputElement.click(); // Trigger the hidden file input click
+                }
+            });
+        }
+
+        // --- Event Listeners Setup ---
+
+        // Tabs functionality
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+                button.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+
+        // Sliders
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            slider.addEventListener('input', () => updateSliderValue(slider));
+            updateSliderValue(slider); // Set initial value display
+        });
+
+        // Image input previews & Drag and Drop setup
+        setupDragAndDrop(editFaceDropArea, editFaceInput, editFacePreview, editFaceDropArea.querySelector('.placeholder-text'));
+        editFaceInput.addEventListener('change', () => handleImageInputChange(editFaceInput, editFacePreview, editFaceDropArea.querySelector('.placeholder-text')));
+        
+        setupDragAndDrop(swapFaceDropArea, swapFaceInput, swapFacePreview, swapFacePlaceholder);
+        swapFaceInput.addEventListener('change', () => handleImageInputChange(swapFaceInput, swapFacePreview, swapFacePlaceholder));
+
+        setupDragAndDrop(swapShapeDropArea, swapShapeInput, swapShapePreview, swapShapePlaceholder);
+        swapShapeInput.addEventListener('change', () => handleImageInputChange(swapShapeInput, swapShapePreview, swapShapePlaceholder));
+
+        setupDragAndDrop(swapColorDropArea, swapColorInput, swapColorPreview, swapColorPlaceholder);
+        swapColorInput.addEventListener('change', () => handleImageInputChange(swapColorInput, swapColorPreview, swapColorPlaceholder));
+
+
+        // Form submissions
+        // Listen to click events on the explicit buttons, not form submit
+        document.getElementById('edit_run_button').addEventListener('click', (e) => submitForm(e, '/preview_face', editStatusText, editFaceOutputImg, editFaceOutputPlaceholder));
+        document.getElementById('swap_run_button').addEventListener('click', (e) => submitForm(e, '/swap_hair', swapStatusText, swapOutputImg, swapOutputPlaceholder));
+
+        // "Use Result for Swap" button logic
+        useEditResultButton.addEventListener('click', () => {
+            if (!editedFaceBlob) {
+                editStatusText.textContent = "❌ Belum ada wajah yang diedit untuk digunakan!";
+                return;
+            }
+            // Switch to swap tab
+            tabButtons[1].click(); 
+            
+            // Set the preview image in the swap tab
+            const imageUrl = URL.createObjectURL(editedFaceBlob);
+            swapFacePreview.src = imageUrl;
+            swapFacePreview.style.display = 'block';
+            swapFacePlaceholder.style.display = 'none'; 
+            
+            // Clear current file from swap_face_input if any, as we're using the blob
+            swapFaceInput.value = ''; 
+        });
+
+        // Initial status message and setup
+        editStatusText.textContent = "Server AI sedang memuat model. Tunggu sebentar sebelum mencoba proses...";
+        setTimeout(() => {
+            editStatusText.textContent = "Server AI siap. Silakan unggah gambar wajah.";
+            swapStatusText.textContent = "Server AI siap. Silakan unggah gambar.";
+        }, 5000); 
+    </script>
+</body>
+</html>

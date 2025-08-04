@@ -1,0 +1,150 @@
+# --- Output, Dataset, & Log ---
+# Folder-folder ini umumnya tidak dilacak
+output/
+CelebA/
+test_*/
+test*.txt
+compare/*
+test_coef/*.png
+/logs/
+/input/
+
+# --- File Arsip ---
+*.zip
+*.bz2
+
+# --- File yang akan dilacak oleh LFS ---
+# Baris-baris ini dinonaktifkan agar Git dapat melihat file-file ini
+# dan menyerahkannya ke Git LFS.
+# *.pth
+# *.npz
+# *.pkl
+# *.pt
+# **/*.npy
+# **/*.npz
+# **/*.pth
+# **/*.mp4
+# **/*.dat
+
+# --- Kode Sumber yang TIDAK BOLEH diabaikan ---
+# Notebook adalah kode, jadi kita pastikan ia dilacak.
+# **/*.ipynb
+
+# --- Direktori Model ---
+# Folder ini berisi model LFS, jadi tidak boleh diabaikan.
+# /pretrained_models/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff
+instance/
+.webassets-cache
+
+# Scrapy stuff
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# IDE & Perkakas
+.spyderproject
+.spyproject
+.ropeproject
+.idea
+/site
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+wandb/
+
+# --- Gradio-specific files ---
+.gradio/
+flagged/
+*.pem
+
+# Lain-lain
+*.lmdb/
